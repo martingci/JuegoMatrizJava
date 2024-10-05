@@ -54,25 +54,33 @@ public class Juego {
         return opcion;
     }
 
-    public static boolean gestordeSituaciones (int[][] ubicaciones, String[][] map) {
+    public static boolean gestordeSituaciones (int[][] ubicaciones, String[][] map, int[] playerStats) {
         switch (map[ubicaciones[1][1]][ubicaciones[1][0]]) {
             case "#":
                 return false;
             case "C":
                 int opcion = leerOpcionLimitada("Desea abrir el cofre, 1 para abrilo, 0 para rechazarlo", 0,1);
-                if (opcion == 1) {
-                    if ((int)(Math.random() * 2) == 1) {
-                        System.out.println("Felicidades, haz encontrado");
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
+                return gestordeCofre(map, playerStats, opcion);
+            case "E":
+
         }
         return true;
     }
+
+    public static boolean gestordeCofre (String [][] map, int[] playerStats, int option) {
+        if (option == 1) {
+            if ((int) (Math.random() * 2) == 1) {
+                System.out.println("Felicidades, obtienes +50 de vida");
+                playerStats[3] += 50;
+            } else {
+                System.out.println("Maldición, el cofre era una trampa");
+                System.out.println("Pierdes 25 de vida");
+                playerStats[3] -= 25;
+            }
+        }
+        return true;
+    }
+
     
     public static int [][] ubicacionActualyFutura (int[] playerStats, String direction) {
         int xInicial = playerStats[0];
@@ -98,7 +106,7 @@ public class Juego {
 
     public static String[][] realizarMovimiento(String[][] map, int[] playerStats, String direction) {
         int [][] ubicaciones = ubicacionActualyFutura(playerStats, direction);
-        if (gestordeSituaciones(ubicaciones, map)) {
+        if (gestordeSituaciones(ubicaciones, map, playerStats)) {
             map[ubicaciones[0][1]][ubicaciones[0][0]] = ".";
             map[ubicaciones[1][1]][ubicaciones[1][0]] = "P";
             playerStats[0] = ubicaciones[1][0];
